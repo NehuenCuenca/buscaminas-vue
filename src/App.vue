@@ -1,16 +1,17 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <h1>Buscaminas</h1>
+  <Dificultades/>
+  <Tablero />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Tablero from './components/Tablero.vue';
+import Dificultades from './components/Dificultades.vue';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  components: { Tablero, Dificultades },
+  setup() {}
 }
 </script>
 
@@ -19,8 +20,30 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5vh;
+}
+
 </style>
