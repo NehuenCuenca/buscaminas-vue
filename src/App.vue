@@ -49,7 +49,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10vh 0 15vh 0;
+  padding: 5vh 0 10vh 0;
 }
 
+h1, h2, h3, h4 {
+  margin: 0;
+}
 </style>

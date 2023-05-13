@@ -3,14 +3,14 @@
         <div id="info-tablero">
             <span>{{ cantBanderas }} 🚩</span>
             <button id="btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
-            <span id="cronometro">999</span>
+            <span id="cronometro">{{ timerTablero }}''⏱</span>
         </div>
         
         
         <div v-if="tablero" class="tablero" :class=" terminoJuego ? 'intocable' : ''">
             <div v-for="(fila, indexFila) in tablero" :key="indexFila" class="fila">
                 <Celda v-for="(celda, indexCelda) in fila" :key="indexCelda" :celda="celda" class="columna"
-                    @manejarCelda="manejarCelda" @manejarBandera="manejarBandera" @mousedown="() => emojiJuego = '🤨'"/>
+                    @manejarCelda="manejarCelda" @manejarBandera="manejarBandera" @mousedown="() => emojiJuego = '🤨'" @mouseup="() => emojiJuego = '🙂'"/>
             </div>
         </div>
     </div>
@@ -25,10 +25,18 @@ export default {
     name: "Tablero",
     components: { Celda },
     setup() {
+        //VARS
         const tablero = ref([]);
         const cantBanderas = ref(0);
         const terminoJuego = ref(false);
         const emojiJuego = ref('🙂');
+
+        const timerTablero = ref(0);
+        const timerWindow = ref(null);
+
+        // Funciones
+        const empezarTimer = () => { timerWindow.value = setInterval(() => { timerTablero.value++;}, 1000); }   
+        const pararTimer = () => { clearInterval(timerWindow.value) }
 
         const generarTablero = () => {
             const { filas, columnas } = dificultad.dificultadActual;
@@ -72,7 +80,6 @@ export default {
             }
         };
 
-        // TODO: REFACTORIZAR manejarBandera
         const manejarBandera = (celda, toggler) => {
             const { cantBombas } = dificultad.dificultadActual;
             if (cantBanderas.value === 0 && celda.bandera) {
@@ -89,9 +96,9 @@ export default {
 
         const manejarCelda = (celda) => {
             const primerJugada = !tablero.value.flat().some(({ visible, id }) => visible && id != celda.id);
-            emojiJuego.value = '🙂'
             // Si clickeo una bomba en la primer jugada...
             if (primerJugada) {
+                empezarTimer()
                 // buscar una celda sin bomba, sin que sea la misma celda
                 nextTick(() => {
                     moverBombasCercanas(celda);
@@ -107,6 +114,7 @@ export default {
                     alert("🤯 HAS PISADO UNA BOMBITA 🤯");
                     terminoJuego.value = true;
                     emojiJuego.value = '💀'
+                    pararTimer()
                     return descubrirBombas(celda);
                 }
 
@@ -128,6 +136,7 @@ export default {
             );
             const gano = bombasTienenBandera && !hayCeldasCubiertas;
             if (gano) {
+                pararTimer()
                 console.log("GANASTEEE");
                 alert("GANASTEEE");
                 terminoJuego.value = true;
@@ -247,10 +256,12 @@ export default {
         };
 
         watch(dificultad, () => { empezarJuego() });
+        watch(timerTablero, () => { if( timerTablero.value === 999 ){ pararTimer() } });
 
         return {
             dificultad,
             tablero,
+            timerTablero,
             emojiJuego,
             cantBanderas,
             manejarCelda,

@@ -2,11 +2,11 @@
     <div>
         <ul id="lista-niveles">
             <li v-for="(nivel, index) in Object.keys(dificultades)" :key="index"> 
-                <button @click="setearNivel(nivel)">{{ nivel }}</button>
+                <button @click="setearNivel(nivel)" class="nivel" 
+                :class="(dificultad.dificultadActual.nivel === nivel) ? 'seleccionado' : ''">{{ nivel }}</button>
             </li>
         </ul>
         <div id="info-nivel">
-            <span>Nivel actual: {{ dificultad.dificultadActual.nivel }}</span>
             <span>Filas: {{ dificultad.dificultadActual.filas }}</span>
             <span>Columnas: {{ dificultad.dificultadActual.columnas }} </span>
             <span>Minas: {{ dificultad.dificultadActual.cantBombas}}</span>
@@ -73,11 +73,17 @@ ul#lista-niveles{
     justify-content: space-around;
     align-items: center;
 }
-#lista-niveles li button {
+#lista-niveles li .nivel {
     cursor: pointer;
     text-transform: uppercase;
     font-size: 1.1rem;
     letter-spacing: 2px;
+    padding: .4rem;
+    border-radius: 1rem;
+}
+
+.nivel.seleccionado {
+    background-color: darkcyan;
 }
 
 #info-nivel{
