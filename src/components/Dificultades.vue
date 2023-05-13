@@ -1,10 +1,16 @@
 <template>
     <div>
-        <ul>
+        <ul id="lista-niveles">
             <li v-for="(nivel, index) in Object.keys(dificultades)" :key="index"> 
                 <button @click="setearNivel(nivel)">{{ nivel }}</button>
             </li>
         </ul>
+        <div id="info-nivel">
+            <span>Nivel actual: {{ dificultad.dificultadActual.nivel }}</span>
+            <span>Filas: {{ dificultad.dificultadActual.filas }}</span>
+            <span>Columnas: {{ dificultad.dificultadActual.columnas }} </span>
+            <span>Minas: {{ dificultad.dificultadActual.cantBombas}}</span>
+        </div>
     </div>
 </template>
 
@@ -16,26 +22,30 @@ export default {
     setup () {
 
         const dificultades = ref({
+            /* 'Test': {
+                filas: 4,
+                columnas: 4,
+                cantBombas: Math.floor( ((3*4) * 0.10) )
+            }, */
             'Facil': {
                 filas: 8,
                 columnas: 8,
-                cantBombas: Math.floor( ((8*8) * 0,10) )
+                cantBombas: Math.floor( ((8*8) * 0.16) )
             },
             'Medio': {
                 filas: 16,
                 columnas: 16,
-                cantBombas: Math.floor( ((16*16) * 0,40) )
+                cantBombas: Math.floor( ((16*16) * 0.16) )
             },
             'Dificil': {
                 filas: 16,
                 columnas: 30,
-                cantBombas: Math.floor( ((16*30) * 0,40) )
+                cantBombas: Math.floor( ((16*30) * 0.21) )
             }
         })
         
         const setearNivel = (nivel) => { 
             if( nivel === dificultad.dificultadActual.nivel ) return
-            console.log({nivel, ...dificultades.value[nivel]})
             dificultad.setearDificultad({nivel, ...dificultades.value[nivel]})
         }
 
@@ -54,17 +64,27 @@ export default {
 </script>
 
 <style scoped>
-ul {
+ul#lista-niveles{
     height: 10vh;
     width: 100%;
-    margin: 0;
-    padding: 1vh;
+    padding: 2vh;
     list-style-type: none;
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
-ul li button {
+#lista-niveles li button {
     cursor: pointer;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+#info-nivel{
+    display: flex;
+    justify-content: space-around;
+    column-gap: 2vw;
+    padding: 3vh;
+    border: 1px solid black;
 }
 </style>

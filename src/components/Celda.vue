@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { computed, toRefs, watch } from 'vue';
+import { computed, nextTick, toRefs, watch } from 'vue';
 
     export default {
         name: 'Celda',
@@ -26,7 +26,9 @@ import { computed, toRefs, watch } from 'vue';
             })
 
             const colocarBandera = () => { 
+                if( visible.value ) return
                 bandera.value = !bandera.value
+                emit('manejarBandera', props.celda, bandera.value)
             }
 
             const mostrarCelda = () => {
@@ -61,12 +63,11 @@ import { computed, toRefs, watch } from 'vue';
     color: black;
     font-size: 1.2rem;
     font-weight: bold;
-}
-.celda span {
-    font-size: 10px;
+    user-select: none;
 }
 
 .descubierta {
  background-color: gainsboro;
+ cursor: auto
 }
 </style>

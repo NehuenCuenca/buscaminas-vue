@@ -1,18 +1,23 @@
 <template>
-    <div>
-        <h3>Tablero</h3>
-        <p>{{ dificultad.dificultadActual }}</p>
-        <div v-if="tablero" class="tablero">
+    <div class="component">
+        <div id="info-tablero">
+            <span>{{ cantBanderas }} 🚩</span>
+            <button id="btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
+            <span id="cronometro">999</span>
+        </div>
+        
+        
+        <div v-if="tablero" class="tablero" :class=" terminoJuego ? 'intocable' : ''">
             <div v-for="(fila, indexFila) in tablero" :key="indexFila" class="fila">
                 <Celda v-for="(celda, indexCelda) in fila" :key="indexCelda" :celda="celda" class="columna"
-                    @manejarCelda="manejarCelda" />
+                    @manejarCelda="manejarCelda" @manejarBandera="manejarBandera" @mousedown="() => emojiJuego = '🤨'"/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { dificultad } from "../stores/dificultad.js";
 import Celda from "../components/Celda.vue";
 
@@ -22,50 +27,173 @@ export default {
     setup() {
         const tablero = ref([]);
         const cantBanderas = ref(0);
+        const terminoJuego = ref(false);
+        const emojiJuego = ref('🙂');
 
         const generarTablero = () => {
-            const { filas, columnas, cantBombas } = dificultad.dificultadActual;
+            const { filas, columnas } = dificultad.dificultadActual;
             tablero.value = [];
-            let contador = 1;
+            let contadorCeldas = 0;
 
             nextTick(() => {
                 tablero.value = Array.from({ length: filas }).map((fila, i) => {
                     return Array.from({ length: columnas }, (v, j) => {
-                        contador++;
-                        const tieneBomba =  Math.floor(Math.random() * 10) >= 8.5;
+                        contadorCeldas++;
+
                         return {
-                            id: contador - 1,
+                            id: contadorCeldas - 1,
                             fila: i,
                             columna: j,
                             bandera: false,
-                            tieneBomba,
+                            tieneBomba: false,
                             visible: false,
-                            valor: tieneBomba ? "💣" : "",
+                            valor: "",
                         };
                     });
                 });
+                
+                colocarBombasAleatoriamente();
             });
         };
 
-        const manejarCelda = (celda) => {
-            // Si clickeo una bomba...
-            // Sino..
-            // Si es el primer click (solo hay una celda visible)...
-            // Si clickeo una celda vecina o SIN BOMBA...
-            if (celda.tieneBomba) {
-                console.log("PERDISTEEEEE");
+        const colocarBombasAleatoriamente = () => {
+            const { cantBombas } = dificultad.dificultadActual;
+            let contadorBombas = 0;
+
+            while (contadorBombas < cantBombas) {
+                const celdasSinBomba = tablero.value.flat().filter(({ tieneBomba }) => !tieneBomba);
+                const indiceRandom = Math.floor(Math.random() * celdasSinBomba.length);
+
+                const celdaRandom = celdasSinBomba[indiceRandom];
+                celdaRandom.tieneBomba = !celdaRandom.tieneBomba;
+                celdaRandom.valor = "💣";
+
+                contadorBombas++;
+            }
+        };
+
+        // TODO: REFACTORIZAR manejarBandera
+        const manejarBandera = (celda, toggler) => {
+            const { cantBombas } = dificultad.dificultadActual;
+            if (cantBanderas.value === 0 && celda.bandera) {
+                celda.bandera = !celda.bandera;
                 return;
             }
 
+            toggler && cantBanderas.value > 0 && cantBanderas.value <= cantBombas
+                ? cantBanderas.value--
+                : cantBanderas.value++;
+
+            checkearVictoria();
+        };
+
+        const manejarCelda = (celda) => {
+            const primerJugada = !tablero.value.flat().some(({ visible, id }) => visible && id != celda.id);
+            emojiJuego.value = '🙂'
+            // Si clickeo una bomba en la primer jugada...
+            if (primerJugada) {
+                // buscar una celda sin bomba, sin que sea la misma celda
+                nextTick(() => {
+                    moverBombasCercanas(celda);
+
+                    const celdasVecinas = mapearCeldasVecinas(celda);
+                    celdasVecinas.forEach((vecina) => { vecina.tieneBomba = false; });
+
+                    descubrirCeldas(celda);
+                });
+            } else {
+                // Si clickeo una BOMBA...
+                if (celda.tieneBomba) {
+                    alert("🤯 HAS PISADO UNA BOMBITA 🤯");
+                    terminoJuego.value = true;
+                    emojiJuego.value = '💀'
+                    return descubrirBombas(celda);
+                }
+
+                // Si clickeo una celda vecina o SIN BOMBA...
+                descubrirCeldas(celda);
+            }
+
+            checkearVictoria();
+        };
+
+        const checkearVictoria = () => {
+            const tableroUnidimensional = tablero.value.flat();
+            const bombasTienenBandera = tableroUnidimensional
+                .filter(({ tieneBomba }) => tieneBomba)
+                .every((c) => c.bandera && !c.visible);
+
+            const hayCeldasCubiertas = tableroUnidimensional.some(
+                ({ visible, bandera }) => !visible && !bandera
+            );
+            const gano = bombasTienenBandera && !hayCeldasCubiertas;
+            if (gano) {
+                console.log("GANASTEEE");
+                alert("GANASTEEE");
+                terminoJuego.value = true;
+                emojiJuego.value = '😎'
+            }
+        };
+
+        const empezarJuego = () => { 
+            const { cantBombas } = dificultad.dificultadActual;
+            terminoJuego.value = false;
+            emojiJuego.value = '🙂'
+            cantBanderas.value = cantBombas;            
+            generarTablero();
+        }
+
+        const descubrirBombas = (bombaClickeada) => {
+            tablero.value.flat()
+                .filter(({ tieneBomba, id }) => tieneBomba && id != bombaClickeada.id )
+                .forEach((celda) => {
+                    celda.visible = true;
+                });
+        };
+
+        const moverBombasCercanas = (celda) => {
+            const bombasCercanas = mapearCeldasVecinas(celda).filter(({ tieneBomba }) => tieneBomba);
+            if (celda.tieneBomba) { bombasCercanas.push(celda); }
+
+            bombasCercanas.forEach((celdaConBomba) => {
+                const celdaRandom = buscarCeldaSinBomba(celda);
+                celdaRandom.tieneBomba = !celdaRandom.tieneBomba;
+                celdaConBomba.tieneBomba = !celdaConBomba.tieneBomba;
+            });
+            // console.log(tablero.value.flat().filter(({ tieneBomba }) => tieneBomba));
+            return;
+        };
+
+        const buscarCeldaSinBomba = (celda) => {
+            const nueveCeldas = [
+                celda.id,
+                ...mapearCeldasVecinas(celda).map(({ id }) => id),
+            ];
+
+            const celdasSinBomba = tablero.value
+                .flat()
+                .filter(
+                    ({ tieneBomba, id }) => !tieneBomba && !nueveCeldas.includes(id)
+                );
+
+            const indiceRandom = Math.floor(Math.random() * celdasSinBomba.length);
+
+            return celdasSinBomba[indiceRandom];
+        };
+
+        const descubrirCeldas = (celda) => {
             const cantBombasVecinas = contarBombasVecinas(celda);
             celda.valor = cantBombasVecinas > 0 ? cantBombasVecinas : "";
             if (!celda.visible) { celda.visible = !celda.visible; }
 
             if (cantBombasVecinas === 0) {
-                const celdasVecinas = mapearCeldasVecinas(celda);
+                const celdasVecinas = mapearCeldasVecinas(celda).filter(
+                    ({ tieneBomba, visible, bandera }) =>
+                        !tieneBomba && !visible && !bandera
+                );
                 for (let i = 0; i < celdasVecinas.length; i++) {
                     const celdaVecina = celdasVecinas[i];
-                    manejarCelda(celdaVecina);
+                    descubrirCeldas(celdaVecina);
                 }
             }
         };
@@ -98,7 +226,7 @@ export default {
 
         const mapearCeldasVecinas = (celda) => {
             const { filas, columnas } = dificultad.dificultadActual;
-            const celdasVecinasSinBombas = [];
+            const celdasVecinas = [];
 
             for (
                 let i = Math.max(celda.fila - 1, 0);
@@ -112,35 +240,59 @@ export default {
                 ) {
                     // Ignorar la celda actual
                     if (i === celda.fila && j === celda.columna) continue;
-                    if (!tablero.value[i][j].tieneBomba && !tablero.value[i][j].visible) {
-                        celdasVecinasSinBombas.push(tablero.value[i][j]);
-                    }
+                    celdasVecinas.push(tablero.value[i][j]);
                 }
             }
-            return celdasVecinasSinBombas;
+            return celdasVecinas;
         };
 
-        watch(dificultad, () => {
-            const { cantBombas } = dificultad.dificultadActual
-            cantBanderas.value = cantBombas
-            generarTablero();
-        });
-
-        onMounted(() => {
-            generarTablero();
-        });
+        watch(dificultad, () => { empezarJuego() });
 
         return {
             dificultad,
             tablero,
+            emojiJuego,
+            cantBanderas,
             manejarCelda,
-            cantBanderas
+            manejarBandera,
+            terminoJuego,
+            empezarJuego,
         };
     },
 };
 </script>
 
 <style scoped>
+
+.component {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 4vh;
+}
+
+#info-tablero{
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 5vw;
+    user-select: none;
+}
+
+#btn-reiniciar{
+    font-size: inherit;
+    width: auto;
+    height: auto;
+    background: none;
+    border: 1px solid grey;
+    padding: .3rem;
+    cursor:pointer; 
+    user-select: unset;
+}
+
 .tablero {
     width: 70vw;
     height: auto;
@@ -151,6 +303,11 @@ export default {
     row-gap: 2px;
 }
 
+.intocable{
+    pointer-events: none;
+}
+
+
 .fila {
     display: flex;
     width: 70vw;
@@ -158,4 +315,6 @@ export default {
     justify-content: center;
     align-items: center;
 }
+
+
 </style>

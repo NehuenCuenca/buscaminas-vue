@@ -21,6 +21,11 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 2vh;
 }
 
 html, body {
@@ -40,10 +45,11 @@ html{
 }
 
 body {
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 5vh;
+  padding: 10vh 0 15vh 0;
 }
 
 </style>
