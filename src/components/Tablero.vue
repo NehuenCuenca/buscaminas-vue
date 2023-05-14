@@ -1,5 +1,5 @@
 <template>
-    <div class="component">
+    <div class="component" >
         <div id="info-tablero">
             <span>{{ cantBanderas }} 🚩</span>
             <button id="btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
@@ -9,8 +9,11 @@
         
         <div v-if="tablero" class="tablero" :class=" terminoJuego ? 'intocable' : ''">
             <div v-for="(fila, indexFila) in tablero" :key="indexFila" class="fila">
-                <Celda v-for="(celda, indexCelda) in fila" :key="indexCelda" :celda="celda" class="columna"
-                    @manejarCelda="manejarCelda" @manejarBandera="manejarBandera" @mousedown="() => emojiJuego = '🤨'" @mouseup="() => emojiJuego = '🙂'"/>
+                <Celda v-for="(celda, indexCelda) in fila" :key="indexCelda"  
+                    :celda="celda"
+                    @manejarCelda="manejarCelda" @manejarBandera="manejarBandera" 
+                    @mousedown="() => emojiJuego = '🤨'" @mouseup="() => emojiJuego = '🙂'"
+                    class="columna" :class="(celda.visible) ? 'intocable': ''" @contextmenu="() => false"/>
             </div>
         </div>
     </div>
@@ -32,7 +35,7 @@ export default {
         const emojiJuego = ref('🙂');
 
         const timerTablero = ref(0);
-        const timerWindow = ref(null);
+        const timerWindow  = ref(null);
 
         // Funciones
         const empezarTimer = () => { timerWindow.value = setInterval(() => { timerTablero.value++;}, 1000); }   
@@ -136,9 +139,8 @@ export default {
             );
             const gano = bombasTienenBandera && !hayCeldasCubiertas;
             if (gano) {
-                pararTimer()
-                console.log("GANASTEEE");
-                alert("GANASTEEE");
+                pararTimer();
+                alert("🤓GANASTEEE🤓");
                 terminoJuego.value = true;
                 emojiJuego.value = '😎'
             }
@@ -146,6 +148,8 @@ export default {
 
         const empezarJuego = () => { 
             const { cantBombas } = dificultad.dificultadActual;
+            timerTablero.value = 0
+            pararTimer();
             terminoJuego.value = false;
             emojiJuego.value = '🙂'
             cantBanderas.value = cantBombas;            
