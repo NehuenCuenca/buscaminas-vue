@@ -7,9 +7,9 @@
             </li>
         </ul>
         <div id="info-nivel">
-            <span>Filas: {{ dificultad.dificultadActual.filas }}</span>
-            <span>Columnas: {{ dificultad.dificultadActual.columnas }} </span>
-            <span>Minas: {{ dificultad.dificultadActual.cantBombas}}</span>
+            <span><u>Filas:</u> {{ dificultad.dificultadActual.filas }}</span>
+            <span><u>Columnas:</u> {{ dificultad.dificultadActual.columnas }} </span>
+            <span><u>Minas:</u> {{ dificultad.dificultadActual.cantBombas}}</span>
         </div>
     </div>
 </template>
@@ -92,5 +92,6 @@ ul#lista-niveles{
     column-gap: 2vw;
     padding: 3vh;
     border: 1px solid black;
+    font-size: 1.2rem;
 }
 </style>

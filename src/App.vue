@@ -1,5 +1,5 @@
 <template>
-  <h1>Buscaminas</h1>
+  <h1>Buscaminas by Nehuen Cuenca</h1>
   <Dificultades/>
   <Tablero />
 </template>

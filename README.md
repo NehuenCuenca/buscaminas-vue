@@ -1,5 +1,9 @@
 # buscaminas
 
+Recreacion del clasico juego buscaminas ( https://buscaminas.eu/ ) realizado con Vue 3 Composition API
+
+Demo/deploy: https://buscaminas-nc.netlify.app/
+
 ## Project setup
 ```
 npm install
