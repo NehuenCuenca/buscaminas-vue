@@ -17,15 +17,17 @@ export default {
 
 <style>
 #app {
+  width: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: white;
   height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: 2vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 html, body {
@@ -50,6 +52,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 5vh 0 10vh 0;
+  background-color: #2c3e50;
 }
 
 h1, h2, h3, h4 {

@@ -1,5 +1,5 @@
 <template>
-    <div class="component" >
+    <div class="component" >    
         <div id="info-tablero">
             <span>{{ cantBanderas }} 🚩</span>
             <button id="btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
@@ -212,29 +212,7 @@ export default {
         };
 
         const contarBombasVecinas = (celda) => {
-            let contador = 0;
-            const { filas, columnas } = dificultad.dificultadActual;
-
-            for (
-                let i = Math.max(celda.fila - 1, 0);
-                i <= Math.min(celda.fila + 1, filas - 1);
-                i++
-            ) {
-                for (
-                    let j = Math.max(celda.columna - 1, 0);
-                    j <= Math.min(celda.columna + 1, columnas - 1);
-                    j++
-                ) {
-                    // Ignorar la celda actual
-                    if (i === celda.fila && j === celda.columna) continue;
-                    // Si la celda vecina tiene una bomba, retornar true
-                    if (tablero.value[i][j].tieneBomba) {
-                        contador++;
-                    }
-                }
-            }
-
-            return contador;
+            return mapearCeldasVecinas(celda).filter(({tieneBomba}) => tieneBomba).length
         };
 
         const mapearCeldasVecinas = (celda) => {
@@ -280,7 +258,7 @@ export default {
 <style scoped>
 
 .component {
-    width: 70%;
+    width: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -309,7 +287,7 @@ export default {
 }
 
 .tablero {
-    width: 70vw;
+    width: 90%;
     height: auto;
     display: flex;
     flex-direction: column;
@@ -324,8 +302,8 @@ export default {
 
 
 .fila {
+    width: 100%;
     display: flex;
-    width: 70vw;
     column-gap: 2px;
     justify-content: center;
     align-items: center;

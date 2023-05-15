@@ -75,15 +75,20 @@ ul#lista-niveles{
 }
 #lista-niveles li .nivel {
     cursor: pointer;
+    color: #2c3e50;
     text-transform: uppercase;
     font-size: 1.1rem;
     letter-spacing: 2px;
-    padding: .4rem;
-    border-radius: 1rem;
+    padding: .4rem .6rem;
+    border-radius: .5rem;
+    border-style: none;
 }
 
-.nivel.seleccionado {
+#lista-niveles li .nivel.seleccionado {
     background-color: darkcyan;
+    color: white;
+    text-shadow: 2px 0 #2c3e50, -2px 0 #2c3e50, 0 2px #2c3e50, 0 -2px #2c3e50,
+               1px 1px #2c3e50, -1px -1px #2c3e50, 1px -1px #2c3e50, -1px 1px #2c3e50;
 }
 
 #info-nivel{
@@ -91,7 +96,7 @@ ul#lista-niveles{
     justify-content: space-around;
     column-gap: 2vw;
     padding: 3vh;
-    border: 1px solid black;
+    border: 3px solid #2c3e50;
     font-size: 1.2rem;
 }
 </style>
