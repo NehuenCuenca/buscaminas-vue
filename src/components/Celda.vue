@@ -1,52 +1,74 @@
 <template>
-    <div @click="mostrarCelda" 
-        @click.right.prevent="colocarBandera" 
-        class="celda" :class="(visible) ? 'descubierta': ''">
-       {{ valorCelda }} 
+    <div ref="celdaTemplate" 
+        @click="mostrarCelda" @click.right.prevent="colocarBandera" 
+        @mousedown.left="toggleClass" class="celda" :class="visible ? 'descubierta' : ''">
+        {{ valorCelda }}
     </div>
 </template>
 
 <script>
-import { computed, nextTick, toRefs, watch } from 'vue';
+import { computed, toRefs, ref, nextTick, watch, onMounted } from "vue";
 
-    export default {
-        name: 'Celda',
-        props: ['celda'],
-        setup( props, {emit} ) {
-            const { id, fila, columna, visible, tieneBomba, bandera, valor } = toRefs(props.celda)
+export default {
+    name: "Celda",
+    props: ["celda"],
+    setup(props, { emit }) {
+        const { id, fila, columna, visible, tieneBomba, bandera, valor, explotar } = toRefs(props.celda);
+        const celdaTemplate = ref(null);
 
-            const valorCelda = computed(() => {
-                let valorLocal
-                if( !visible.value && bandera.value ){ valorLocal = '🚩' } 
-                if( visible.value ){ 
-                    valorLocal = (tieneBomba.value) ?  '💣' : valor.value
-                } 
+        const valorCelda = computed(() => {
+            let valorLocal;
+            if (!visible.value && bandera.value) {
+                valorLocal = "🚩";
+            }
+            if (visible.value) {
+                valorLocal = tieneBomba.value ? "💣" : valor.value;
+            }
 
-                return valorLocal
+            return valorLocal;
+        });
+
+        const colocarBandera = () => {
+            if (visible.value) return;
+            bandera.value = !bandera.value;
+            emit("manejarBandera", props.celda, bandera.value);
+        };
+
+        const mostrarCelda = () => {
+            if (visible.value && valor.value === "") return;
+            if (!visible.value) { visible.value = true; }
+
+            emit("manejarCelda", props.celda);
+        };
+
+        const toggleClass = () => {
+            if (visible.value) return;
+            celdaTemplate.value.classList.toggle("descubierta");
+        };
+
+
+        const explotarLocal = () => {
+            nextTick(() => {
+                celdaTemplate.value.classList.add("exploto");
             })
-
-            const colocarBandera = () => { 
-                if( visible.value ) return
-                bandera.value = !bandera.value
-                emit('manejarBandera', props.celda, bandera.value)
-            }
-
-            const mostrarCelda = () => {
-                if( visible.value ) return
-                visible.value = true
-                emit('manejarCelda', props.celda)
-            }
-
-            return {
-                id, fila, columna,
-                visible,
-                tieneBomba,
-                mostrarCelda,
-                colocarBandera,
-                valorCelda
-            }
         }
-    }
+
+        watch(explotar, explotarLocal)
+
+        return {
+            id,
+            fila,
+            columna,
+            visible,
+            tieneBomba,
+            mostrarCelda,
+            colocarBandera,
+            valorCelda,
+            celdaTemplate,
+            toggleClass,
+        };
+    },
+};
 </script>
 
 <style scoped>
@@ -67,7 +89,11 @@ import { computed, nextTick, toRefs, watch } from 'vue';
 }
 
 .descubierta {
- background-color: gainsboro;
- cursor: auto
+    background-color: gainsboro;
+    cursor: auto;
+}
+
+.exploto {
+    background-color: rgba(190, 0, 0, 0.7);
 }
 </style>
