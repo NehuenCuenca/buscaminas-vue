@@ -183,7 +183,6 @@ export default {
                 celdaRandom.tieneBomba = !celdaRandom.tieneBomba;
                 celdaConBomba.tieneBomba = !celdaConBomba.tieneBomba;
             });
-            // console.log(tablero.value.flat().filter(({ tieneBomba }) => tieneBomba));
             return;
         };
 
@@ -225,11 +224,12 @@ export default {
 
         const acordeCeldas = (celda) => { 
             const celdasVecinasFiltradas = mapearCeldasVecinas(celda).filter( ({ visible, bandera }) => !visible && !bandera); 
-            console.log(celdasVecinasFiltradas)
+
             for (let i = 0; i < celdasVecinasFiltradas.length; i++) {
                 const celdaVecina = celdasVecinasFiltradas[i];
                 descubrirCeldas(celdaVecina);
             }
+            checkearVictoria();
         }
 
         const contarBombasVecinas = (celda) => {
