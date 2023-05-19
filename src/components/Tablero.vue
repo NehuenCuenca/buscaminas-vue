@@ -7,7 +7,7 @@
         </div>
         
         
-        <div v-if="tablero" class="tablero" :class=" terminoJuego ? 'intocable' : ''">
+        <div v-if="tablero" class="tablero" :class=" terminoJuego ? 'intocable' : ''" id="juego-tablero">
             <div v-for="(fila, indexFila) in tablero" :key="indexFila" class="fila">
                 <Celda v-for="(celda, indexCelda) in fila" :key="indexCelda"  
                     :celda="celda" class="columna" @contextmenu="() => false"
@@ -115,16 +115,18 @@ export default {
                 // Si clickeo una BOMBA...
                 if (celda.tieneBomba) { return pisoBomba(celda) }
 
-                //Si clickea una celda descubierta con alguna bomba y una bandera cerca
+                //Si clickea un NUMERO con banderas vecinas (la cant de banderas debe ser igual o mayor al numero clickeado)
                 const tieneBanderasNecesarias = mapearCeldasVecinas(celda).filter(({ bandera }) => bandera).length >= celda.valor
                 const clickAcorde = celda.valor != '' && celda.visible && tieneBanderasNecesarias
                 if (clickAcorde) { return acordeCeldas(celda) }
 
+                // Descartadas las otras opciones, si clickea una celda ya descubierta...
+                if( celda.valor != '' && celda.visible ){ return } 
+
                 // Si clickeo una celda vecina o SIN BOMBA...
                 descubrirCeldas(celda);
+                checkearVictoria();
             }
-
-            checkearVictoria();
         };
 
         const pisoBomba = (celda) => { 
@@ -140,13 +142,17 @@ export default {
 
         const checkearVictoria = () => {
             const tableroUnidimensional = tablero.value.flat();
-            const bombasTienenBandera = tableroUnidimensional
-                .filter(({ tieneBomba }) => tieneBomba)
-                .every((c) => c.bandera && !c.visible);
 
             const hayCeldasCubiertas = tableroUnidimensional.some(
                 ({ visible, bandera }) => !visible && !bandera
             );
+
+            if(hayCeldasCubiertas){ return}
+
+            const bombasTienenBandera = tableroUnidimensional
+                .filter(({ tieneBomba }) => tieneBomba)
+                .every((c) => c.bandera && !c.visible);
+
             const gano = bombasTienenBandera && !hayCeldasCubiertas;
             if (gano) {
                 pararTimer();

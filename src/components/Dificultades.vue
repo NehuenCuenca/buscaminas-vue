@@ -2,7 +2,7 @@
     <div>
         <ul id="lista-niveles">
             <li v-for="(nivel, index) in Object.keys(dificultades)" :key="index"> 
-                <button @click="setearNivel(nivel)" class="nivel" 
+                <button @click="elegirNivel(nivel)" class="nivel" 
                 :class="(dificultad.dificultadActual.nivel === nivel) ? 'seleccionado' : ''">{{ nivel }}</button>
             </li>
         </ul>
@@ -44,19 +44,26 @@ export default {
             }
         })
         
-        const setearNivel = (nivel) => { 
+        const elegirNivel = (nivel) => { 
             if( nivel === dificultad.dificultadActual.nivel ) return
             dificultad.setearDificultad({nivel, ...dificultades.value[nivel]})
+            centrarVistaAlTablero()
+             
+        }
+
+        const centrarVistaAlTablero = () => { 
+            const tablero = document.querySelector("#juego-tablero");
+            tablero.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         }
 
         onMounted(() => {
             const [ facil ] = Object.keys(dificultades.value)
-            setearNivel(facil)
+            elegirNivel(facil)
         })
 
         return {
             dificultades,
-            setearNivel,
+            elegirNivel,
             dificultad
         }   
     }

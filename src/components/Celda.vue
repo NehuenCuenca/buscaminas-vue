@@ -35,6 +35,7 @@ export default {
         };
 
         const mostrarCelda = () => {
+            if (bandera.value) return;
             if (visible.value && valor.value === "") return;
             if (!visible.value) { visible.value = true; }
 
@@ -42,7 +43,7 @@ export default {
         };
 
         const toggleClass = () => {
-            if (visible.value) return;
+            if (visible.value || bandera.value) return;
             celdaTemplate.value.classList.toggle("descubierta");
         };
 
