@@ -216,16 +216,19 @@ export default {
             celda.valor = cantBombasVecinas > 0 ? cantBombasVecinas : "";
             if (!celda.visible) { celda.visible = !celda.visible; }
 
-            if (cantBombasVecinas === 0) {
-                const celdasVecinas = mapearCeldasVecinas(celda).filter(
-                    ({ tieneBomba, visible, bandera }) =>
-                        !tieneBomba && !visible && !bandera
-                );
-                for (let i = 0; i < celdasVecinas.length; i++) {
-                    const celdaVecina = celdasVecinas[i];
-                    descubrirCeldas(celdaVecina);
+            nextTick(() => {  
+                if (cantBombasVecinas === 0) {
+                    const celdasVecinas = mapearCeldasVecinas(celda).filter(
+                        ({ tieneBomba, visible, bandera }) =>
+                            !tieneBomba && !visible && !bandera
+                    );
+                    
+                    for (let i = 0; i < celdasVecinas.length; i++) {
+                        const celdaVecina = celdasVecinas[i];
+                        descubrirCeldas(celdaVecina);
+                    }
                 }
-            }
+            })
         };
 
         const acordeCeldas = (celda) => { 
