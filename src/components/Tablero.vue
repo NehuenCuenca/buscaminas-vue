@@ -1,5 +1,6 @@
 <template>
-    <div class="component" >    
+    <div class="component" >  
+        <ConfettiAnimation v-if="emojiJuego === '😎' && terminoJuego"/>  
         <div id="info-tablero">
             <span>{{ cantBanderas }} 🚩</span>
             <button id="btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
@@ -23,10 +24,11 @@
 import { nextTick, ref, watch } from "vue";
 import { dificultad } from "../stores/dificultad.js";
 import Celda from "../components/Celda.vue";
+import ConfettiAnimation from "../components/ConfettiAnimation.vue";
 
 export default {
     name: "Tablero",
-    components: { Celda },
+    components: { Celda, ConfettiAnimation },
     setup() {
         //VARS
         const tablero = ref([]);
