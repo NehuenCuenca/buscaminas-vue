@@ -22,11 +22,6 @@ export default {
     setup () {
 
         const dificultades = ref({
-            /* 'Test': {
-                filas: 4,
-                columnas: 4,
-                cantBombas: Math.floor( ((3*4) * 0.10) )
-            }, */
             'Facil': {
                 filas: 8,
                 columnas: 8,

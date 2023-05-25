@@ -1,6 +1,9 @@
 <template>
-    <div class="component" >  
-        <ConfettiAnimation v-if="emojiJuego === '😎' && terminoJuego"/>  
+    <div class="component">
+        <template v-if="emojiJuego === '😎' && terminoJuego">  
+            <ConfettiAnimation  />  
+            <TiemposPorNivel :dificultad="dificultad.dificultadActual"/>
+        </template>
         <div id="info-tablero">
             <span>{{ cantBanderas }} 🚩</span>
             <button id="btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
@@ -24,11 +27,12 @@
 import { nextTick, ref, watch } from "vue";
 import { dificultad } from "../stores/dificultad.js";
 import Celda from "../components/Celda.vue";
+import TiemposPorNivel from "../components/TiemposPorNivel.vue";
 import ConfettiAnimation from "../components/ConfettiAnimation.vue";
 
 export default {
     name: "Tablero",
-    components: { Celda, ConfettiAnimation },
+    components: { Celda, ConfettiAnimation, TiemposPorNivel },
     setup() {
         //VARS
         const tablero = ref([]);
@@ -161,8 +165,26 @@ export default {
                 alert("🤓GANASTEEE🤓");
                 terminoJuego.value = true;
                 emojiJuego.value = '😎'
+                guardarTiempo({ timer: timerTablero.value, fecha: Date.now()})
             }
         };
+
+        const guardarTiempo = ({timer, fecha}) => { 
+            const tiempos = JSON.parse(localStorage.getItem('tiemposPorNivel')) || {};
+            const { nivel } = dificultad.dificultadActual;
+            
+            //Si el timer actual es inferior a los 3 timers ya realizados, retornarmos..
+            if(tiempos[nivel]?.length === 3 && tiempos[nivel]?.every(viejo => viejo.timer < timer)){ return }
+            
+            // En caso contrario, guardamos el timer realizado
+            const hayTiemposViejos = (tiempos[nivel]?.length > 0) ? tiempos[nivel] : [];
+            const todosLosTiempos = { 
+                ...tiempos, 
+                [nivel]: [ ...hayTiemposViejos, {timer, fecha}].sort((a,b) => a.timer - b.timer).slice(0, 3)
+            }
+
+            localStorage.setItem('tiemposPorNivel', JSON.stringify(todosLosTiempos));
+        }
 
         const empezarJuego = () => { 
             const { cantBombas } = dificultad.dificultadActual;
