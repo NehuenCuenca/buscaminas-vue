@@ -131,7 +131,6 @@ export default {
 
                 // Si clickeo una celda vecina o SIN BOMBA...
                 descubrirCeldas(celda);
-                checkearVictoria();
             }
         };
 
@@ -147,19 +146,22 @@ export default {
         }
 
         const checkearVictoria = () => {
+            const { cantBombas } = dificultad.dificultadActual
             const tableroUnidimensional = tablero.value.flat();
 
-            const hayCeldasCubiertas = tableroUnidimensional.some(
-                ({ visible, bandera }) => !visible && !bandera
-            );
-
-            if(hayCeldasCubiertas){ return}
-
             const bombasTienenBandera = tableroUnidimensional
-                .filter(({ tieneBomba }) => tieneBomba)
-                .every((c) => c.bandera && !c.visible);
+            .filter(({ tieneBomba }) => tieneBomba)
+            .every((c) => c.bandera && !c.visible);
 
-            const gano = bombasTienenBandera && !hayCeldasCubiertas;
+            if(!bombasTienenBandera){ return }
+                            
+            const cantCeldasAbiertas = tableroUnidimensional.filter(
+            ({ visible, bandera }) => visible && !bandera).length ;
+            const cantCeldasSinBombas = tableroUnidimensional.length-cantBombas
+            const todasLasCeldasAbiertas = cantCeldasAbiertas === cantCeldasSinBombas
+            
+            const gano = bombasTienenBandera && todasLasCeldasAbiertas;
+                    
             if (gano) {
                 pararTimer();
                 alert("🤓GANASTEEE🤓");
@@ -233,14 +235,14 @@ export default {
             return celdasSinBomba[indiceRandom];
         };
 
-        const descubrirCeldas = (celda) => {
+        const descubrirCeldas = async(celda) => {
             if(celda.tieneBomba){ return pisoBomba(celda) }
         
             const cantBombasVecinas = contarBombasVecinas(celda);
             celda.valor = cantBombasVecinas > 0 ? cantBombasVecinas : "";
             if (!celda.visible) { celda.visible = !celda.visible; }
 
-            nextTick(() => {  
+            await nextTick(() => {  
                 if (cantBombasVecinas === 0) {
                     const celdasVecinas = mapearCeldasVecinas(celda).filter(
                         ({ tieneBomba, visible, bandera }) =>
@@ -253,6 +255,8 @@ export default {
                     }
                 }
             })
+            
+            if(!terminoJuego.value) checkearVictoria();
         };
 
         const acordeCeldas = (celda) => { 
@@ -262,7 +266,6 @@ export default {
                 const celdaVecina = celdasVecinasFiltradas[i];
                 descubrirCeldas(celdaVecina);
             }
-            checkearVictoria();
         }
 
         const contarBombasVecinas = (celda) => {
