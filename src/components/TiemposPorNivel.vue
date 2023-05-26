@@ -4,7 +4,7 @@
         <ul id="mejores-tiempos">
             <li v-for="({timer, fecha}, index) in ultimosTiemposSegunNivel" 
                 :key="index"> 
-                <span> {{ timer }} segundos | {{ new Date(fecha).getHours() }}:{{ new Date(fecha).getMinutes() > 10 ? new Date(fecha).getMinutes(): '0'+new Date(fecha).getMinutes()}} - {{ new Date(fecha).getDate() }}/{{ new Date(fecha).getMonth()+1 }}/{{ new Date(fecha).getFullYear() }}</span> 
+                <span> {{ timer }} segundos | {{ new Date(fecha).getHours() }}:{{ new Date(fecha).getMinutes() > 9 ? new Date(fecha).getMinutes(): '0'+new Date(fecha).getMinutes()}} - {{ new Date(fecha).getDate() }}/{{ new Date(fecha).getMonth()+1 }}/{{ new Date(fecha).getFullYear() }}</span> 
             </li>
         </ul>
     </div>
