@@ -2,9 +2,9 @@
     <div id="tiemposPorNivel">
         <h3>Tus mejores tiempos en el nivel: <span id="nivelActual">{{ nivel }}</span></h3>
         <ul id="mejores-tiempos">
-            <li v-for="({timer, fecha}, index) in ultimosTiemposSegunNivel" 
+            <li v-for="({ timer, fecha}, index) in ultimosTiemposSegunNivel" 
                 :key="index"> 
-                <span> {{ timer }} segundos | {{ new Date(fecha).getHours() }}:{{ new Date(fecha).getMinutes() > 9 ? new Date(fecha).getMinutes(): '0'+new Date(fecha).getMinutes()}} - {{ new Date(fecha).getDate() }}/{{ new Date(fecha).getMonth()+1 }}/{{ new Date(fecha).getFullYear() }}</span> 
+                <span> {{ timer }} segundos | {{ fechaFormateada(fecha) }}</span> 
             </li>
         </ul>
     </div>
@@ -25,9 +25,22 @@ export default {
             ultimosTiemposSegunNivel.value = [ ...tiemposPorNivel[nivel.value] ]
         })
 
+        const fechaFormateada = ( fecha ) => { 
+            const constructorFecha = new Date(fecha)
+            
+            const hora = constructorFecha.getHours()
+            const minutos = constructorFecha.getMinutes() > 9 ? constructorFecha.getMinutes(): '0'+constructorFecha.getMinutes()
+            const dia = constructorFecha.getDate()
+            const mes = constructorFecha.getMonth()+1
+            const anio = constructorFecha.getFullYear()
+
+            return `${hora}:${minutos} - ${dia}/${mes}/${anio}`
+        }
+
         return {
             nivel,
-            ultimosTiemposSegunNivel
+            ultimosTiemposSegunNivel,
+            fechaFormateada
         }
     }
 
