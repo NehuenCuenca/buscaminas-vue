@@ -1,6 +1,8 @@
 <template>
-  <h1>Buscaminas by Nehuen Cuenca</h1>
-  <Dificultades/>
+  <header class="header">
+    <h1 class="header__titulo">Buscaminas</h1>
+    <Dificultades/>
+  </header>
   <Tablero />
 </template>
 
@@ -16,46 +18,90 @@ export default {
 </script>
 
 <style>
+:root {
+	--display-font: Tahoma;
+	--default-font: sans-serif, Arial;
+	--black: #000000;
+	--white: #FFFFFF;
+
+	--blue-ocean-dark: #2c3e50;
+
+	color: var(--white);
+	background-color: var(--blue-ocean-dark);
+}
+
+/* RESETS */
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+body {
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+	width: 100%;
+	padding: 5vh 0 10vh 0;
+}
+
+img, picture, video, canvas, svg {
+	display: block;
+	max-width: 100%;
+}
+
+p {
+	overflow-wrap: break-word;
+}
+
+a { 
+	color:inherit;
+	text-decoration: none;
+}
+
+button{
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+}
+
+ul,ol { 
+	list-style-type: none;
+	padding: 0
+}
+
+html {
+	font: normal normal 400 1.2rem var(--default-font);
+	width: 100%;
+	scroll-behavior: smooth;
+}
+
+header {
+	width: 100%;
+}
+
+section {
+	scroll-margin-block-start: 120px; /*Adds margin to the top of the viewport*/
+	scroll-margin-block-end: 120px; /*Adds margin to the bottom of the viewport*/
+}
+
+
 #app {
   width: 100%;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: white;
-  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: 2vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+.header{
+	padding: 0 2rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
 }
-
-html{
-    box-sizing: border-box;
-    font-family: sans-serif;
-}
-
-*, *:before, *:after {
-    box-sizing: inherit;
-}
-
-body {
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 5vh 0 10vh 0;
-  background-color: #2c3e50;
-}
-
-h1, h2, h3, h4 {
-  margin: 0;
+.header__titulo{
+    font: normal normal 600 2.2rem var(--display-font);
 }
 </style>
