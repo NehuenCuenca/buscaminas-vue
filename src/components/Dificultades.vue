@@ -26,9 +26,9 @@ export default {
                 cantBombas: Math.floor( ((8*8) * 0.16) )
             },
             'Medio': {
-                filas: 16,
-                columnas: 16,
-                cantBombas: Math.floor( ((16*16) * 0.16) )
+                filas: 10,
+                columnas: 22,
+                cantBombas: Math.floor( ((10*22) * 0.16) ),
             },
             'Dificil': {
                 filas: 16,
@@ -39,14 +39,7 @@ export default {
         
         const elegirNivel = (nivel) => { 
             if( nivel === dificultad.dificultadActual.nivel ) return
-            dificultad.setearDificultad({nivel, ...dificultades.value[nivel]})
-            centrarVistaAlTablero()
-             
-        }
-
-        const centrarVistaAlTablero = () => { 
-            const tablero = document.querySelector("#juego-tablero");
-            tablero.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+            dificultad.setearDificultad({nivel, ...dificultades.value[nivel]})             
         }
 
         onMounted(() => {
@@ -74,7 +67,7 @@ export default {
     font: normal normal 400 1.1rem var(--default-font);
     color: var(--blue-ocean-dark);
     background-color: var(--white);
-    text-transform: uppercase;
+    text-transform: capitalize;
     padding: .3rem .5rem;
     border-radius: .5rem;
     border: none;

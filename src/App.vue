@@ -3,7 +3,15 @@
     <h1 class="header__titulo">Buscaminas</h1>
     <Dificultades/>
   </header>
-  <Tablero />
+  <main>
+	<Tablero />
+  </main>
+  <footer class="footer">
+	<span class="firma-dev">
+		Desarrollado por 
+		<a class="firma-dev__link" href="https://www.linkedin.com/in/nehuen-cuenca/" target="_blank">Nehuen Cuenca</a>
+	</span>
+  </footer>
 </template>
 
 <script>
@@ -43,7 +51,6 @@ body {
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 	width: 100%;
-	padding: 5vh 0 10vh 0;
 }
 
 img, picture, video, canvas, svg {
@@ -88,20 +95,35 @@ section {
 
 
 #app {
+  min-height: 100vh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 2vh;
+  display: grid;
+  grid-template-rows: 10vh auto min-content;
+  align-content: space-between;
+  justify-items: center;
+  gap: 1.5rem;
 }
 
-.header{
-	padding: 0 2rem;
+.header{ 
+	padding: 1.5rem 2rem 0 2rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-end;
 }
 .header__titulo{
     font: normal normal 600 2.2rem var(--display-font);
+}
+
+.footer{
+	width: 100%;
+	background-color: rgba(1, 1, 1, 0.2);
+	text-align: center;
+}
+/* .firma-dev{} */
+.firma-dev__link{
+    font: normal normal 600 1.2rem var(--display-font);
+	text-decoration: underline;
+	text-transform: capitalize;
+	color: darkcyan;
 }
 </style>

@@ -1,25 +1,27 @@
 <template>
-    <div class="component">
+    <div class="tablero-container">
         <template v-if="emojiJuego === '😎' && terminoJuego">  
             <ConfettiAnimation  />  
             <TiemposPorNivel :dificultad="dificultad.dificultadActual"/>
         </template>
-        <div id="info-tablero">
-            <span>{{ cantBanderas }} 🚩</span>
-            <button id="btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
-            <span id="cronometro">{{ timerTablero }}''⏱</span>
+
+        <div class="info-tablero">
+            <span class="info-tablero__cant-banderas">{{ cantBanderas }} 🚩</span>
+            <button class="info-tablero__btn-reiniciar" @click="empezarJuego">{{ emojiJuego }}</button>
+            <span class="info-tablero__cronometro">{{ timerTablero }}''⏱</span>
         </div>
         
-        
-        <div v-if="tablero" class="tablero" :class=" terminoJuego ? 'intocable' : ''" id="juego-tablero">
+        <div v-if="tablero" class="tablero-container__tablero" :class=" terminoJuego ? 'tablero-container__tablero_intocable' : ''">
             <div v-for="(fila, indexFila) in tablero" :key="indexFila" class="fila">
                 <Celda v-for="(celda, indexCelda) in fila" :key="indexCelda"  
-                    :celda="celda" class="columna" @contextmenu="() => false"
+                    :celda="celda" @contextmenu="() => false"
                     @manejarCelda="manejarCelda" @manejarBandera="manejarBandera" 
                     @mousedown="() => emojiJuego = '🤨'" @mouseup="() => emojiJuego = '🙂'"
                     />
             </div>
         </div>
+
+        <InfoNivelActual />
     </div>
 </template>
 
@@ -29,10 +31,11 @@ import { dificultad } from "../stores/dificultad.js";
 import Celda from "../components/Celda.vue";
 import TiemposPorNivel from "../components/TiemposPorNivel.vue";
 import ConfettiAnimation from "../components/ConfettiAnimation.vue";
+import InfoNivelActual from "./InfoNivelActual.vue";
 
 export default {
     name: "Tablero",
-    components: { Celda, ConfettiAnimation, TiemposPorNivel },
+    components: { Celda, ConfettiAnimation, TiemposPorNivel, InfoNivelActual },
     setup() {
         //VARS
         const tablero = ref([]);
@@ -314,38 +317,36 @@ export default {
 
 <style scoped>
 
-.component {
-    width: 80%;
+.tablero-container {
+    width: min-content;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    row-gap: 4vh;
+    row-gap: 1rem;
 }
 
-#info-tablero{
-    font-size: 1.3rem;
+.info-tablero{
+    font: normal normal 400 1.3rem var(--default-font);
     display: flex;
     justify-content: center;
     align-items: center;
     column-gap: 5vw;
     user-select: none;
 }
-
-#btn-reiniciar{
+.info-tablero__btn-reiniciar{
     font-size: inherit;
-    width: auto;
-    height: auto;
-    background: none;
+    background: transparent;
     border: 1px solid grey;
     padding: .3rem;
-    cursor:pointer; 
     user-select: unset;
 }
 
-.tablero {
-    width: 90%;
-    height: auto;
+/* .info-tablero__cant-banderas */
+/* .info-tablero__cronometro */
+
+.tablero-container__tablero {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -353,10 +354,9 @@ export default {
     row-gap: 2px;
 }
 
-.intocable{
+.tablero-container__tablero_intocable{
     pointer-events: none;
 }
-
 
 .fila {
     width: 100%;
@@ -365,6 +365,4 @@ export default {
     justify-content: center;
     align-items: center;
 }
-
-
 </style>

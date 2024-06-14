@@ -77,15 +77,12 @@ export default {
     cursor: pointer;
     border: 2px solid black;
     background-color: grey;
-    height: 35px;
-    width: 45px;
-    /* padding: .2rem; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
-    font-size: 1.2rem;
-    font-weight: bold;
+    color: var(--black);
+    font: normal normal 600 1.2rem var(--default-font);
+    min-height: 40px;
+    min-width: 40px;
+    display: grid;
+    place-items: center;
     user-select: none;
 }
 
