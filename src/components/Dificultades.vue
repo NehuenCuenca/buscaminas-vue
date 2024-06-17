@@ -16,8 +16,8 @@ export default {
     setup () {
         const dificultades = ref({
             /* 'test': {
-                filas: 5,
-                columnas: 5,
+                filas: 3,
+                columnas: 3,
                 cantBombas: 2
             }, */
             'Facil': {

@@ -1,9 +1,9 @@
 <template>
-    <div id="tiemposPorNivel">
-        <h3>Tus mejores tiempos en el nivel: <span id="nivelActual">{{ nivel }}</span></h3>
-        <ul id="mejores-tiempos">
+    <div class="tiempos-por-nivel">
+        <h3 class="tiempos-por-nivel__titulo">Tus mejores tiempos en el nivel: <span class="nivel-actual">{{ nivel }}</span></h3>
+        <ul class="lista-mejores-tiempos">
             <li v-for="({ timer, fecha}, index) in ultimosTiemposSegunNivel" 
-                :key="index"> 
+                :key="index" class="mejor-tiempo-item"> 
                 <span> {{ timer }} segundos | {{ fechaFormateada(fecha) }}</span> 
             </li>
         </ul>
@@ -48,39 +48,43 @@ export default {
 </script>
 
 <style scoped>
-#tiemposPorNivel{
+.tiempos-por-nivel{
+    min-width: max-content;
     border-radius: 1rem;
     padding: 1rem;
     background-color: darkslategray;
 }
 
-span#nivelActual {
-    text-transform: uppercase;
+.tiempos-por-nivel__titulo{
+    font: normal normal 400 1.3rem var(--display-font);
 }
 
-ul#mejores-tiempos {
-    width: auto;
-    height: auto;
-    margin: 0;
-    font-size: 1.2rem;
+.nivel-actual {
+    text-transform: uppercase;
+    font: normal normal 700 1.5rem var(--display-font);
+}
+
+.lista-mejores-tiempos {
+    margin: 1rem 0 0 0;
+    padding: revert;
+    font: normal normal 400 1.1rem var(--default-font);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    gap: 1rem;
 }
 
-#mejores-tiempos li { width: 100%;}
-#mejores-tiempos li::marker {
-    font-size:1.7rem;
+
+.mejor-tiempo-item::marker {
+    font-size: 1.5rem;
 }
 
-ul#mejores-tiempos li:nth-child(1){
+.mejor-tiempo-item:nth-child(1){
     list-style: '🥇';
 }
-ul#mejores-tiempos li:nth-child(2){
+.mejor-tiempo-item:nth-child(2){
     list-style: '🥈';
 }
-ul#mejores-tiempos li:nth-child(3){
+.mejor-tiempo-item:nth-child(3){
     list-style: '🥉';
 }
 
